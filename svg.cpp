@@ -9,6 +9,18 @@ void svg_rect(double x, double y, double width, double height,string stroke = "b
 cout << "<rect x='"<<x<<"' y='" <<y<<"' width='" <<width <<"' height='" <<height <<"' stroke='"<<stroke<<"' fill='"<<fill<<"'/>";
 }
 
+double SCALING(const vector<size_t>& bins, double BLOCK, double IMAGE_WIDTH,double TEXT_LEFT ){
+    double max;
+    max=-1;
+    for (size_t bin: bins){
+        if (bin>max)
+            max=bin;
+    }
+
+    BLOCK = (IMAGE_WIDTH-TEXT_LEFT /max);
+    return BLOCK;
+}
+
 void svg_text(double left, double baseline, string text)
 {
 cout << "<text x='" << left << "' y='" << baseline << "'>" << text << "</text>";
@@ -31,19 +43,25 @@ cout << "</svg>\n";
 }
 
 void show_histogram_svg(const vector<size_t>& bins) {
-const auto IMAGE_WIDTH = 400;
+const auto BLOCK=10;
+const auto TEXT_LEFT = 40;
+const auto IMAGE_WIDTH = 700;
+double BLOCK_WIDTH = SCALING(bins,BLOCK,IMAGE_WIDTH,TEXT_LEFT);
 const auto IMAGE_HEIGHT = 300;
-const auto TEXT_LEFT = 20;
 const auto TEXT_BASELINE = 20;
-const auto TEXT_WIDTH = 50;
-const auto BIN_HEIGHT = 30;
-const auto BLOCK_WIDTH = 10;
+const auto TEXT_WIDTH = 10;
+const auto BIN_HEIGHT = (IMAGE_HEIGHT/bins.size());
+size_t text_reflection = IMAGE_HEIGHT +TEXT_WIDTH - TEXT_LEFT;
+size_t histogram_reflection;
+
+
     svg_begin(IMAGE_WIDTH,IMAGE_HEIGHT);
 double top = 0;
 for (size_t bin : bins) {
-    const double bin_width = BLOCK_WIDTH * bin;
-    svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
-    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT,"darkviolet","#9400D3");
+   const double bin_width = BLOCK_WIDTH * bin;
+histogram_reflection = IMAGE_WIDTH-bin_width-TEXT_LEFT;
+svg_rect(histogram_reflection , top, bin_width, BIN_HEIGHT,"darkviolet","#9400D3");
+svg_text(text_reflection, top + TEXT_BASELINE, to_string(bin));
     top += BIN_HEIGHT;
 }
 svg_end();

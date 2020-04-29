@@ -1,7 +1,6 @@
 #include "histogram.h"
-
 #include <cassert>
-
+#include "svg.h"
 void
 test_positive() {
 double min = 0;
@@ -41,6 +40,18 @@ double max = 0;
 find_minmax({}, min, max);
 
 }
+void test_text_reflection()
+{
+    size_t text_reflection;
+    show_histogram_svg({2,2,2});
+    assert(text_reflection==0);
+}
+void test_histogram_reflection()
+{
+    size_t histogram_reflection;
+    show_histogram_svg({2,2,2});
+    assert(histogram_reflection==0);
+}
 
 int
 main() {
@@ -49,4 +60,6 @@ test_negative();
 test_same();
 test_single();
 test_empty();
+test_histogram_reflection();
+test_text_reflection();
 }
